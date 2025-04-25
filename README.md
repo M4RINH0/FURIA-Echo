@@ -33,7 +33,7 @@ O usuário escolhe com quem quer conversar, e cada personagem responde com base 
 
 Interface inspirada no WeChat do Vision Pro, com visual limpo, moderno e imersivo para focar no conteúdo das conversas.
 
-![Protótipo FURIA Echo](assets\Furia ECHO.png)
+![Protótipo FURIA Echo](./assets/Furia%20ECHO.png)
 
 ---
 
