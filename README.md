@@ -1,8 +1,3 @@
-Claro! Aqui está o `README.md` atualizado com base na stack final (React + Django) e os ecos definidos (FalleN, Sidde, Guerri, KSCERATO, yuurih e "a FURIA"). Pronto pra usar no seu repositório:
-
----
-
-```markdown
 # 🎧 FURIA Echo
 
 **FURIA Echo** é um web chat interativo onde fãs da FURIA podem conversar com ecos digitais de ídolos do time de CS:GO, como **FalleN**, **Guerri**, **Sidde**, **KSCERATO**, **yuurih** e até com **"a FURIA"**, uma persona que representa a organização em si.  
