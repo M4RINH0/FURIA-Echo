@@ -11,8 +11,8 @@ O usuário escolhe com quem quer conversar, e cada personagem responde com base 
 
 ### Personagens disponíveis:
 - 🧔 **FalleN** — o professor tático, responde com profundidade e calma
-- 🧢 **Guerri** — o coach, focado no time e na preparação
-- 🎙️ **Sidde** — o caster, responde com emoção, hype e bom humor
+- 🧢 **Guerri** — o antigo coach, mostrando conhecimento e vivencia na organização
+- 🎙️ **Sidde** — o coach, focado no time e na preparação
 - 🎯 **KSCERATO** — o foco no clutch, frio e direto
 - 🔥 **yuurih** — agressivo e confiante, sempre com energia
 - 🐯 **a FURIA** — a organização em si, responde sobre notícias, próximos jogos e estrutura do time
