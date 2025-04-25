@@ -1,0 +1,27 @@
+@import "tailwindcss";
+
+/* Regras de responsividade para o container do chat */
+@media (max-width: 768px) {
+    /* Para dispositivos móveis, transformar em uma coluna */
+    .flex.rounded-2xl {
+      flex-direction: column;
+      height: 90vh !important;
+    }
+    
+    /* Ajustar a altura das seções */
+    .flex.rounded-2xl > div:first-child {
+      height: 30%;
+    }
+    
+    .flex.rounded-2xl > div:last-child {
+      height: 70%;
+    }
+  }
+  
+  @media (min-width: 1600px) {
+    /* Para telas muito grandes, limitar o tamanho */
+    .flex.rounded-2xl {
+      max-width: 1400px;
+      max-height: 800px;
+    }
+  }
