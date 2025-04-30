@@ -1,0 +1,156 @@
+{
+  "team_id": 8297,
+  "team_name": "FURIA",
+  "last_updated": "2025-04-29T14:49:38.708452Z",
+  "ranking": {
+    "current_rank": 18,
+    "points": 18
+  },
+  "upcoming_matches": [],
+  "recent_results": [
+    {
+      "hltv_id": 2381321,
+      "event": "PGL Bucharest 2025 - 12-14th",
+      "datetime_utc": "2025-04-09T12:50:00+00:00",
+      "opponent": "The MongolZ",
+      "score": "0-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2381321/furia-vs-the-mongolz-pgl-bucharest-2025"
+    },
+    {
+      "hltv_id": 2381310,
+      "event": "PGL Bucharest 2025 - 12-14th",
+      "datetime_utc": "2025-04-08T09:05:00+00:00",
+      "opponent": "Virtus.pro",
+      "score": "0-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2381310/furia-vs-virtuspro-pgl-bucharest-2025"
+    },
+    {
+      "hltv_id": 2381306,
+      "event": "PGL Bucharest 2025 - 12-14th",
+      "datetime_utc": "2025-04-07T14:05:00+00:00",
+      "opponent": "Complexity",
+      "score": "1-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2381306/furia-vs-complexity-pgl-bucharest-2025"
+    },
+    {
+      "hltv_id": 2381258,
+      "event": "PGL Bucharest 2025 - 12-14th",
+      "datetime_utc": "2025-04-06T15:35:00+00:00",
+      "opponent": "Betclic",
+      "score": "2-0",
+      "win": true,
+      "match_url": "https://www.hltv.org/matches/2381258/furia-vs-betclic-pgl-bucharest-2025"
+    },
+    {
+      "hltv_id": 2380117,
+      "event": "BLAST Open Lisbon 2025 - 13-16th",
+      "datetime_utc": "2025-03-22T13:20:00+00:00",
+      "opponent": "M80",
+      "score": "1-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2380117/m80-vs-furia-blast-open-lisbon-2025"
+    },
+    {
+      "hltv_id": 2380007,
+      "event": "BLAST Open Lisbon 2025 - 13-16th",
+      "datetime_utc": "2025-03-20T19:45:00+00:00",
+      "opponent": "Natus Vincere",
+      "score": "0-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2380007/natus-vincere-vs-furia-blast-open-lisbon-2025"
+    },
+    {
+      "hltv_id": 2380068,
+      "event": "ESL Pro League Season 21 - 12-14th",
+      "datetime_utc": "2025-03-10T18:00:00+00:00",
+      "opponent": "Falcons",
+      "score": "1-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2380068/falcons-vs-furia-esl-pro-league-season-21"
+    },
+    {
+      "hltv_id": 2380061,
+      "event": "ESL Pro League Season 21 - 12-14th",
+      "datetime_utc": "2025-03-09T17:00:00+00:00",
+      "opponent": "MIBR",
+      "score": "2-1",
+      "win": true,
+      "match_url": "https://www.hltv.org/matches/2380061/furia-vs-mibr-esl-pro-league-season-21"
+    },
+    {
+      "hltv_id": 2380054,
+      "event": "ESL Pro League Season 21 - 12-14th",
+      "datetime_utc": "2025-03-08T17:20:00+00:00",
+      "opponent": "Liquid",
+      "score": "0-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2380054/liquid-vs-furia-esl-pro-league-season-21"
+    },
+    {
+      "hltv_id": 2380042,
+      "event": "ESL Pro League Season 21 - 12-14th",
+      "datetime_utc": "2025-03-07T14:45:00+00:00",
+      "opponent": "MOUZ",
+      "score": "1-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2380042/mouz-vs-furia-esl-pro-league-season-21"
+    },
+    {
+      "hltv_id": 2380038,
+      "event": "ESL Pro League Season 21 Stage 1 - 6-8th",
+      "datetime_utc": "2025-03-05T19:50:00+00:00",
+      "opponent": "M80",
+      "score": "2-1",
+      "win": true,
+      "match_url": "https://www.hltv.org/matches/2380038/furia-vs-m80-esl-pro-league-season-21-stage-1"
+    },
+    {
+      "hltv_id": 2380035,
+      "event": "ESL Pro League Season 21 Stage 1 - 6-8th",
+      "datetime_utc": "2025-03-04T19:25:00+00:00",
+      "opponent": "NRG",
+      "score": "2-1",
+      "win": true,
+      "match_url": "https://www.hltv.org/matches/2380035/furia-vs-nrg-esl-pro-league-season-21-stage-1"
+    },
+    {
+      "hltv_id": 2380026,
+      "event": "ESL Pro League Season 21 Stage 1 - 6-8th",
+      "datetime_utc": "2025-03-03T15:20:00+00:00",
+      "opponent": "MIBR",
+      "score": "0-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2380026/furia-vs-mibr-esl-pro-league-season-21-stage-1"
+    },
+    {
+      "hltv_id": 2380018,
+      "event": "ESL Pro League Season 21 Stage 1 - 6-8th",
+      "datetime_utc": "2025-03-02T14:30:00+00:00",
+      "opponent": "SAW",
+      "score": "1-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2380018/furia-vs-saw-esl-pro-league-season-21-stage-1"
+    },
+    {
+      "hltv_id": 2379996,
+      "event": "ESL Pro League Season 21 Stage 1 - 6-8th",
+      "datetime_utc": "2025-03-01T15:10:00+00:00",
+      "opponent": "Lynn Vision",
+      "score": "2-0",
+      "win": true,
+      "match_url": "https://www.hltv.org/matches/2379996/furia-vs-lynn-vision-esl-pro-league-season-21-stage-1"
+    },
+    {
+      "hltv_id": 2378901,
+      "event": "IEM Katowice 2025 - 13-16th",
+      "datetime_utc": "2025-02-03T15:00:00+00:00",
+      "opponent": "Astralis",
+      "score": "1-2",
+      "win": false,
+      "match_url": "https://www.hltv.org/matches/2378901/furia-vs-astralis-iem-katowice-2025"
+    }
+  ]
+}
