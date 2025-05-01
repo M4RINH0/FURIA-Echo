@@ -1,129 +1,128 @@
 # 🎧 FURIA Echo
 
-**FURIA Echo** é um web chat interativo onde fãs da FURIA podem conversar com ecos digitais de ídolos do time de CS:GO, como **FalleN**, **Guerri**, **Sidde**, **KSCERATO**, **yuurih** e até com **"a FURIA"**, uma persona que representa a organização em si.  
-As respostas são geradas por uma **IA gratuita** e treinada com **conteúdos reais**, como entrevistas, notícias, estatísticas e curiosidades sobre o time e seus membros.
+**FURIA Echo** é um web-chat onde o torcedor conversa com ecos digitais dos
+jogadores da FURIA (CS 2) *e* com a própria organização.  
+As respostas combinam **dados em tempo-real do HLTV** (próximas partidas,
+resultados, ranking, campeonatos) com **IA gratuita** servida pela
+[OpenRouter](https://openrouter.ai).
 
 ---
 
 ## 🧠 Como funciona
 
-O usuário escolhe com quem quer conversar, e cada personagem responde com base em sua **personalidade real**, **estilo de fala** e **conhecimento específico**. A IA é limitada por uma base de dados curada para garantir fidelidade e coerência nas respostas.
-
-### Personagens disponíveis:
-- 🧔 **FalleN** — o professor tático, responde com profundidade e calma
-- 🧢 **Guerri** — o antigo coach, mostrando conhecimento e vivencia na organização
-- 🎙️ **Sidde** — o coach, focado no time e na preparação
-- 🎯 **KSCERATO** — o foco no clutch, frio e direto
-- 🔥 **yuurih** — agressivo e confiante, sempre com energia
-- 🐯 **a FURIA** — a organização em si, responde sobre notícias, próximos jogos e estrutura do time
-
----
-
-## 💻 Stack utilizada
-
-- **Frontend**: React + TailwindCSS
-- **Backend**: Django + Django REST Framework
-- **IA**: [LLaMA (LNM)](https://openrouter.ai) via OpenRouter API (modelo gratuito)
-- **Hospedagem**: Vercel (frontend) + Railway/Render/Heroku (backend, opcional)
-- **Design de referência**: WeChat no Apple Vision Pro
+1. O usuário escolhe um eco (persona).  
+2. O frontend envia a mensagem para o backend Django.
+3. Django gera um *prompt* usando um **arquivo Markdown** com a história do
+   jogador (ex.: `personas/fallen.md`) + a frase do usuário.
+4. A mensagem é enviada ao modelo **`google/gemini-2.0-flash-exp:free`** via
+   OpenRouter.  
+5. A resposta chega ao React e aparece na bolha do chat.
+6. Para a persona **“FURIA”** o backend não usa IA: responde com dados
+   fresquinhos do snapshot HLTV.
 
 ---
 
-## 🖼️ Protótipo
+### Personagens
 
-Interface inspirada no WeChat do Vision Pro, com visual limpo, moderno e imersivo para focar no conteúdo das conversas.
+| id       | Avatar | Personalidade curta                                   |
+|----------|--------|-------------------------------------------------------|
+| `furia`  | 🐯     | Menu 1-4 com resultados, calendário, ranking          |
+| `fallen` | 🧔     | Professor tático, responde calmo e didático           |
+| `ksc`    | 🎯     | KSCERATO, direto e clutch                               |
+| `yuurih` | 🔥     | Agressivo, confiante                                   |
+| `sidde`  | 🎙️     | Coach, foco estratégico                                |
 
-![Protótipo FURIA Echo](./assets/Furia%20ECHO.png)
+*(adicione mais ecos criando um `personas/<id>.md` e colocando o avatar em
+ `src/assets/avatars/`)*
 
 ---
 
-## 🚀 Como rodar localmente
+## 💻 Stack
+
+| Camada      | Techs                               |
+|-------------|-------------------------------------|
+| **Front**   | React + Vite · TailwindCSS          |
+| **Back**    | Django 5 · Django REST Framework · `cloudscraper` |
+| **IA**      | Google Gemini-2.0 Flash (via OpenRouter) |
+| **Scraper** | HLTV (próximas partidas, resultados, eventos, ranking) |
+| **Hospedagem** | **Vercel** (front) · **Railway** (back) |
+
+---
+
+## 🖼️ Layout
+
+Interface inspirada no WeChat do Vision Pro (bubbles arredondadas, sidebar
+flutuante, input fixo ao rodapé).
+
+<p align="center">
+  <img src="./assets/Furia%20ECHO.png" alt="Protótipo FURIA Echo" width="700">
+</p>
+
+---
+
+## 🚀 Rodando localmente
 
 ### 1. Backend (Django)
 
 ```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # ou venv\Scripts\activate no Windows
-pip install -r requirements.txt
+# raiz do repo
+cd furia_echo_backend
+python -m venv .venv
+source .venv/bin/activate        # Windows: .venv\Scripts\activate
+pip install -r requirements.txt  # django, djangorestframework, cloudscraper, etc.
 
-# Crie um .env com sua chave da OpenRouter
-touch .env
-```
+# .env com segredos
+cat > .env <<EOF
+DJANGO_SECRET_KEY=dev-key
+OPENROUTER_API_KEY=xxxxxxxxxxxxxxxx
+DEBUG=True
+EOF
 
-`.env`
-```
-OPENROUTER_API_KEY=your_openrouter_key_here
-```
-
-```bash
+# popula primeiro snapshot HLTV e inicia
+python manage.py fetch_hltv
 python manage.py runserver
 ```
-
----
-
-### 2. Frontend (React)
+### 2. Frontend (React + Vite)
 
 ```bash
-cd frontend
+cd furia_echo_frontend
 npm install
+# opcional .env  →  VITE_API_BASE=http://localhost:8000/api
 npm run dev
 ```
+Acesse http://localhost:5173.
 
----
-
-## 🔁 Fluxo de funcionamento
-
-1. Usuário acessa o chat e escolhe um personagem.
-2. Frontend envia a mensagem + personagem escolhido para o backend Django.
-3. Django monta o prompt específico com base no personagem.
-4. Backend envia a solicitação para o modelo **LLaMA (LNM)** via OpenRouter.
-5. A resposta é retornada ao frontend para exibição no chat.
-
----
-
-## 📂 Estrutura do projeto
-
+## 📂 Estrutura
 ```
 furia-echo/
-├── backend/
-│   └── ...
-├── frontend/
+├── furia_echo_backend/
+│   ├── echo/              # app Django (views, scraper, personas, ...)
+│   ├── furia_echo/        # settings, urls, wsgi
+│   └── requirements.txt
+├── furia_echo_frontend/
 │   ├── src/
-│   │   ├── components/     # UI do chat
-│   │   ├── pages/
-│   │   └── services/       # API calls
-├── assets/                 # Protótipos, imagens, logos
+│   │   ├── components/    # ChatSidebar, ChatArea, etc.
+│   │   ├── pages/         # Home, Chat
+│   │   └── services/      # chatServices.js
+│   └── vite.config.js
 └── README.md
 ```
 
----
-
-## 💬 Exemplos de perguntas
-
-- "FalleN, como você prepara a equipe mentalmente antes de um Major?"
-- "Guerri, qual é a principal diferença do time de 2020 pro atual?"
-- "FURIA, qual é o próximo jogo do time?"
-- "Sidde, explique como funciona um clutch 1v3 do KSCERATO!"
-- "yuurih, como você mantém o foco mesmo quando o time está perdendo?"
-
----
-
-## 📽️ Vídeo demonstrativo
-
-🎥 Em breve: link para o vídeo com tour completo pela aplicação.
-
----
+## 🔁 Endpoints principais (backend)
+| Rota                         | Método | Descrição                             |
+|------------------------------|--------|---------------------------------------|
+| `/api/chat/furia/`           | POST   | Menu 1-4 (usa snapshot HLTV)          |
+| `/api/chat/player/<id>/`     | POST   | IA do jogador `<id>`                  |
+| `/api/chat/reset/`           | POST   | Limpa contexto OpenRouter no servidor |
 
 ## 📚 Créditos
-
-- Desenvolvido por: Douglas Marinho Martins
-- Dados base: HLTV, Liquipedia, Twitter da FURIA, entrevistas e fontes oficiais
-- IA: [OpenRouter](https://openrouter.ai) - Modelo gratuito LLaMA (LNM)
-
----
+| Área        | Fonte                                          |
+|-------------|------------------------------------------------|
+| Dados       | HLTV, Liquipedia, entrevistas, redes da FURIA  |
+| IA          | OpenRouter (modelo gratuito **Gemini 2.0 Flash**) |
+| Dev & UI    | Douglas Marinho Martins                        |
 
 ## 📬 Contato
+Abra uma issue ou fale comigo no https://www.linkedin.com/in/dodax/.
 
-Sugestões ou dúvidas?  
-Me chama no [LinkedIn](https://www.linkedin.com/in/dodax/) ou abra uma issue aqui no GitHub!
+Vamo pra cima, FURIOSOS! 🐯
