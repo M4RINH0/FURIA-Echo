@@ -1,30 +1,35 @@
 # furia_echo/settings.py
 from pathlib import Path
 from dotenv import load_dotenv
-import os, dj_database_url       #  pip install python-dotenv dj-database-url
+import os, dj_database_url  # pip install python-dotenv dj-database-url
 
 # ───────────────────────────────────────────────────────────────
-#  Diretórios e .env
+# Diretórios e .env
 # ───────────────────────────────────────────────────────────────
 BASE_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BASE_DIR / ".env")           # em produção use Secrets da plataforma
+load_dotenv(BASE_DIR / ".env")  # Em produção, use Secrets da plataforma
 
-# ──────────────────  Básico / Segurança  ──────────────────────
+# ────────────────── Básico / Segurança ────────────────────────
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
-DEBUG      = os.getenv("DEBUG", "False") == "True"
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = [
-    "localhost", "127.0.0.1",            # dev local
-    ".railway.app",                      # backend Railway
-    ".vercel.app",                       # frontend Vercel
+    "localhost", "127.0.0.1",  # Dev local
+    ".railway.app",            # Backend Railway
+    ".vercel.app",             # Frontend Vercel
 ]
 
-# ──────────────────  Apps / Middleware  ───────────────────────
+CSRF_TRUSTED_ORIGINS = [
+    "https://*.railway.app",
+    "https://*.vercel.app",
+]
+
+# ────────────────── Apps / Middleware ─────────────────────────
 INSTALLED_APPS = [
-    # apps da sua aplicação
+    # Apps da aplicação
     "echo",
 
-    # django
+    # Django
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -32,15 +37,15 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
 
-    # terceiros
+    # Terceiros
     "corsheaders",
     "rest_framework",
 ]
 
 MIDDLEWARE = [
-    "corsheaders.middleware.CorsMiddleware",         # ← antes de Security
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
-    "whitenoise.middleware.WhiteNoiseMiddleware",    # estático em produção
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -49,7 +54,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
-# ──────────────────  URLs / Templates / WSGI  ─────────────────
+# ────────────────── URLs / Templates / WSGI ───────────────────
 ROOT_URLCONF = "furia_echo.urls"
 
 TEMPLATES = [{
@@ -67,8 +72,8 @@ TEMPLATES = [{
 
 WSGI_APPLICATION = "furia_echo.wsgi.application"
 
-# ──────────────────  Banco de dados  ──────────────────────────
-# local → sqlite | produção → variável DATABASE_URL (Railway já fornece)
+# ────────────────── Banco de dados ────────────────────────────
+# Local → sqlite | Produção → variável DATABASE_URL (Railway já fornece)
 DATABASES = {
     "default": dj_database_url.config(
         default=f"sqlite:///{BASE_DIR/'db.sqlite3'}",
@@ -76,20 +81,20 @@ DATABASES = {
     )
 }
 
-# ──────────────────  REST Framework  ──────────────────────────
+# ────────────────── REST Framework ────────────────────────────
 REST_FRAMEWORK = {
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
 }
 
-# ──────────────────  Internacionalização  ─────────────────────
+# ────────────────── Internacionalização ───────────────────────
 LANGUAGE_CODE = "pt-br"
-TIME_ZONE     = "UTC"
-USE_I18N      = True
-USE_TZ        = True
+TIME_ZONE = "UTC"
+USE_I18N = True
+USE_TZ = True
 
-# ──────────────────  Arquivos estáticos  ──────────────────────
-STATIC_URL  = "/static/"
-STATIC_ROOT = BASE_DIR / "staticfiles"       # coletados no deploy
+# ────────────────── Arquivos estáticos ────────────────────────
+STATIC_URL = "/static/"
+STATIC_ROOT = BASE_DIR / "staticfiles"  # Coletados no deploy
 
 # WhiteNoise: gzip + manifest
 STATICFILES_STORAGE = (
@@ -98,14 +103,15 @@ STATICFILES_STORAGE = (
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
-# ──────────────────  CORS  ────────────────────────────────────
+# ────────────────── CORS ──────────────────────────────────────
 if DEBUG:
-    # durante o dev aceitamos qualquer origem (Vite)
+    # Durante o dev, aceitamos qualquer origem (Vite)
     CORS_ALLOW_ALL_ORIGINS = True
 else:
-    # produção – permita apenas o front Vercel (ou domínios próprios)
+    # Produção – permita apenas o front Vercel (ou domínios próprios)
     CORS_ALLOWED_ORIGINS = [
-        os.getenv("FRONT_ORIGIN", "https://furia-echo-frontend.vercel.app"),
+        "https://furia-echo.vercel.app",  # Frontend prod
     ]
-
-CSRF_TRUSTED_ORIGINS = [origin.replace("https://", "https://*.") for origin in ALLOWED_HOSTS if "." in origin]
+    CORS_ALLOWED_ORIGIN_REGEXES = [
+        r"^https://.*\.vercel\.app$",
+    ]
