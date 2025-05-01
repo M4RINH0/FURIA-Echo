@@ -1,16 +1,27 @@
-import ChatHeader from "./ChatHeader";
-import MessageList from "./MessageList";
-import ChatInput from "./ChatInput";
+import ChatHeader  from './ChatHeader';
+import MessageList from './MessageList';
+import ChatInput   from './ChatInput';
 
-export default function ChatArea({ conversation, messages, onSendMessage }) {
+export default function ChatArea({
+  conversation,
+  messages,
+  onSendMessage,
+  onResetChat,
+}) {
   return (
-    <div className="flex flex-col h-full">
-      {" "}
-      {/* garante colunas e altura total */}
-      <ChatHeader name={conversation?.name} avatar={conversation?.avatar} />
-      {/* lista ocupa todo o espaço restante, mesmo vazia  */}
-      <MessageList messages={messages} />
-      {/* fica fixo no rodapé do contêiner */}
+    /*  <- 1 linha importante:  flex + h-full  */
+    <div className="flex flex-col h-full flex-1 bg-[rgba(27,31,38,0.5)]">
+      <ChatHeader
+        name={conversation?.name}
+        avatar={conversation?.avatar}
+        canReset={conversation?.id !== 'furia'}
+        onReset={onResetChat}
+      />
+
+      {/* lista ocupa todo o resto do espaço */}
+      <MessageList messages={messages} className="flex-1" />
+
+      {/* input fica colado embaixo */}
       <ChatInput onSendMessage={onSendMessage} />
     </div>
   );

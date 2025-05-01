@@ -1,0 +1,9 @@
+Django>=5.2
+djangorestframework
+cloudscraper
+fake_useragent
+requests
+python-dotenv
+gunicorn
+whitenoise
+bs4

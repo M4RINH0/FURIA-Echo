@@ -1,13 +1,15 @@
 # furia_echo/settings.py
 from pathlib import Path
+from dotenv import load_dotenv
+import os, sys
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# carrega .env se existir ─ antes de usar os valores
+load_dotenv(BASE_DIR / ".env")
 
-# ─────────────────────────  BÁSICO  ──────────────────────────
-SECRET_KEY = "django-insecure-…"
-DEBUG = True
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]          # ajuste se precisar
+SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-dev-key")
+DEBUG      = os.getenv("DEBUG", "False") == "True"
 
 
 # ─────────────────────  APLICAÇÕES  ─────────────────────────
@@ -34,6 +36,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "furia_echo.urls"
@@ -73,7 +76,7 @@ REST_FRAMEWORK = {
 
 
 # ───────────────────  INTERNACIONALIZAÇÃO  ──────────────────
-LANGUAGE_CODE = "en-us"
+LANGUAGE_CODE = "pt-br"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
