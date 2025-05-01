@@ -7,3 +7,4 @@ python-dotenv
 gunicorn
 whitenoise
 bs4
+django-cors-headers>=4.0
