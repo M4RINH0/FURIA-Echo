@@ -1,10 +1,10 @@
 {
   "team_id": 8297,
   "team_name": "FURIA",
-  "last_updated": "2025-04-29T14:49:38.708452Z",
+  "last_updated": "2025-05-01T17:35:32.579438Z",
   "ranking": {
-    "current_rank": 18,
-    "points": 18
+    "current_rank": 19,
+    "points": 19
   },
   "upcoming_matches": [],
   "recent_results": [
@@ -151,6 +151,32 @@
       "score": "1-2",
       "win": false,
       "match_url": "https://www.hltv.org/matches/2378901/furia-vs-astralis-iem-katowice-2025"
+    }
+  ],
+  "upcoming_events": [
+    {
+      "hltv_id": 8045,
+      "name": "PGL Astana 2025",
+      "start_utc": "2025-05-10T10:00:00+00:00",
+      "end_utc": "2025-05-18T10:00:00+00:00",
+      "event_url": "https://www.hltv.org/events/8045/pgl-astana-2025",
+      "logo": "https://img-cdn.hltv.org/eventlogo/u-4VdjFWGYz_GwBxLGrr11.png?ixlib=java-2.1.0&w=50&s=e78a8a6b716fa437cc3cfbb9f6b48ee6"
+    },
+    {
+      "hltv_id": 8037,
+      "name": "IEM Dallas 2025",
+      "start_utc": "2025-05-19T10:00:00+00:00",
+      "end_utc": "2025-05-25T10:00:00+00:00",
+      "event_url": "https://www.hltv.org/events/8037/iem-dallas-2025",
+      "logo": "https://img-cdn.hltv.org/eventlogo/2mt5dKGFBdIcxv37gayq1X.png?ixlib=java-2.1.0&w=50&s=2c98725282ffa079fa6eb78881a99ea3"
+    },
+    {
+      "hltv_id": 8437,
+      "name": "BLAST.tv Austin Major 2025 Stage 2",
+      "start_utc": "2025-06-07T10:00:00+00:00",
+      "end_utc": "2025-06-10T10:00:00+00:00",
+      "event_url": "https://www.hltv.org/events/8437/blasttv-austin-major-2025-stage-2",
+      "logo": "https://img-cdn.hltv.org/eventlogo/adIB7mzeYFH6m60KEvZhus.svg?ixlib=java-2.1.0&s=1edbd1a4b3f670ee7dcd9818c80bdbcf"
     }
   ]
 }

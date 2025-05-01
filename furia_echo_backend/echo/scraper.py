@@ -1,4 +1,3 @@
-# echo/scraper.py
 import datetime as dt
 import re
 from typing import List, Dict
@@ -10,8 +9,8 @@ from fake_useragent import UserAgent
 # --------------------------------------------------------------------------
 # CONFIGURAÇÕES
 # --------------------------------------------------------------------------
-TEAM_ID   = 8297          # id FURIA = 8297  | 4869 = ENCE  (use o time desejado)
-TEAM_SLUG = "furia"       # slug textual da URL
+TEAM_ID   = 8297          # id FURIA = 8297  | 4869 = ENCE
+TEAM_SLUG = "furia"
 
 URL = f"https://www.hltv.org/team/{TEAM_ID}/{TEAM_SLUG}"
 
@@ -29,11 +28,64 @@ def _get_page_html() -> str:
     return r.text
 
 def _ts(ms: int | str) -> dt.datetime:
-    """Timestamp unix em milissegundos → datetime UTC (timezone aware)."""
+    "timestamp -> datetime UTC (aware)"
     return dt.datetime.utcfromtimestamp(int(ms) / 1000).replace(tzinfo=dt.timezone.utc)
 
 # --------------------------------------------------------------------------
-# PARSER • UPCOMING MATCHES
+# PARSER • PROXIMOS CAMPEONATOS
+# --------------------------------------------------------------------------
+def parse_upcoming_events(soup: BeautifulSoup) -> List[Dict]:
+    """
+    Lê a aba ‘Ongoing & upcoming events’ do eventsBox.
+    Retorna lista ordenada pela data de início.
+    """
+    ev_box = soup.find("div", id="eventsBox")
+    if not ev_box:
+        return []
+
+    ongo_div = ev_box.find("div", id="ongoingEvents")
+    if not ongo_div:
+        return []
+
+    holder = ongo_div.find("div", class_="upcoming-events-holder")
+    if not holder:
+        return []
+
+    events: List[Dict] = []
+
+    for anchor in holder.select("a.ongoing-event"):
+        try:
+            url_path   = anchor["href"]
+            event_url  = f"https://www.hltv.org{url_path}"
+            event_id   = int(url_path.split("/")[2])
+            logo_img   = anchor.select_one(".eventbox-eventlogo img")
+            logo_url   = logo_img["src"] if logo_img else ""
+
+            name_div   = anchor.select_one(".eventbox-eventname")
+            event_name = name_div.text.strip() if name_div else "Unnamed event"
+
+            date_spans = anchor.select(".eventbox-date span[data-unix]")
+            start_ms, end_ms = (int(s["data-unix"]) for s in date_spans[:2])
+            start_iso = _ts(start_ms).isoformat()
+            end_iso   = _ts(end_ms).isoformat()
+
+            events.append({
+                "hltv_id":   event_id,
+                "name":      event_name,
+                "start_utc": start_iso,
+                "end_utc":   end_iso,
+                "event_url": event_url,
+                "logo":      logo_url,
+            })
+        except Exception:
+            # Em caso de markup inesperado, passa para o próximo
+            continue
+
+    # ordena por data de início
+    return sorted(events, key=lambda e: e["start_utc"])
+
+# --------------------------------------------------------------------------
+# PARSER • PROXIMAS PARTIDAS
 # --------------------------------------------------------------------------
 def parse_upcoming_matches(soup: BeautifulSoup) -> List[Dict]:
     box = soup.find("div", id="matchesBox")
@@ -101,7 +153,7 @@ def parse_upcoming_matches(soup: BeautifulSoup) -> List[Dict]:
     return upcoming
 
 # --------------------------------------------------------------------------
-# PARSER • RECENT RESULTS
+# PARSER • RESULTADOS RECENTES
 # --------------------------------------------------------------------------
 def parse_recent_results(soup: BeautifulSoup) -> List[Dict]:
     box = soup.find("div", id="matchesBox")
@@ -189,4 +241,5 @@ def fetch_team_snapshot() -> Dict:
         "ranking": parse_ranking(soup),
         "upcoming_matches": parse_upcoming_matches(soup),
         "recent_results": parse_recent_results(soup),
+        "upcoming_events":  parse_upcoming_events(soup),
     }

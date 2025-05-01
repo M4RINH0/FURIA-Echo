@@ -1,63 +1,60 @@
-// src/services/ChatServices.js
-const URL_BASE = 'http://localhost:8000/api/chat';
-
-// ──────── Ecos fixos ─────────────────────────────────────────────────
+import furiaAvatar from "../assets/avatars/furia.jpg";
+import fallenAvatar from "../assets/avatars/fallen.jpg";
+import kscAvatar from "../assets/avatars/kscerato.jpg";
+import yuurihAvatar from "../assets/avatars/yuurih.jpg";
+import siddeAvatar from "../assets/avatars/sidde.jpg";
+/* ──────────────────────────────────────────────────────────────────
+   1.  ECOs fixos (imagem por caminho relativo)
+   ────────────────────────────────────────────────────────────────── */
 export const ECHOS = [
-  { id: 'furia',   name: 'FURIA',    avatar: '/src/assets/avatars/furia.jpg'   },
-  { id: 'fallen',  name: 'FalleN',   avatar: '/src/assets/avatars/fallen.jpg'  },
-  { id: 'ksc',     name: 'KSCERATO', avatar: '/src/assets/avatars/kscerato.jpg'},
-  { id: 'yuurih',  name: 'yuurih',   avatar: '/src/assets/avatars/yuurih.jpg'  },
-  { id: 'sidde',   name: 'sidde',    avatar: '/src/assets/avatars/sidde.jpg'   },
+  { id: "furia", name: "FURIA", avatar: furiaAvatar },
+  { id: "fallen", name: "FalleN", avatar: fallenAvatar },
+  { id: "ksc", name: "KSCERATO", avatar: kscAvatar },
+  { id: "yuurih", name: "yuurih", avatar: yuurihAvatar },
+  { id: "sidde", name: "sidde", avatar: siddeAvatar },
 ];
+/* rota base para o seu Django */
+const API_BASE = "/api/chat";
 
-// ──────── REST auxiliares (histórico salvo em Django) ───────────────
+/* ──────────────────────────────────────────────────────────────────
+     2.  Histórico local / mock
+     ────────────────────────────────────────────────────────────────── */
+// eslint-disable-next-line no-unused-vars
 export async function fetchMessages(ecoId) {
-  const r = await fetch(`${URL_BASE}/${ecoId}/messages`);
-  if (!r.ok) return [];           // primeira vez: vazio
-  return r.json();
+  // Por enquanto retorna vazio (exceto se você quiser mock local)
+  return [];
 }
 
-// ──────── Enviar mensagem (rota interna + IA externa) ───────────────
-export async function sendMessage(ecoId, text) {
-  // 1) salva no histórico local do back (para manter consistência)
-  await fetch(`${URL_BASE}/${ecoId}/messages`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ message: text, from_user: true }),
+/* ──────────────────────────────────────────────────────────────────
+     3.  Eco FURIA — endpoint Django já criado
+     ────────────────────────────────────────────────────────────────── */
+export async function sendFuriaMessage(text) {
+  const res = await fetch(`${API_BASE}/furia/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ message: text }),
   });
+  if (!res.ok) throw new Error("Erro na API FURIA");
 
-  // 2) gera resposta
-  if (ecoId === 'furia') {
-    // ---- usa seu endpoint Django que consulta HLTV ----
-    const r = await fetch(`${URL_BASE}/furia/answer`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ prompt: text }),
-    });
-    const { reply, avatar } = await r.json();
-    return { reply, avatar };
-  }
+  const data = await res.json(); // {reply: "..."}
+  return {
+    id: Date.now(),
+    sender: "FURIA",
+    content: data.reply,
+    isUser: false,
+    avatar: ECHOS.find(e => e.id === "furia").avatar,
+  };
+}
 
-  // ---- jogadores ► HuggingFace Inference API (modelo free) ----
-  const HF_TOKEN = import.meta.env.VITE_HF_TOKEN;          // coloque no .env
-  const systemPrompt = `Você é ${ecoId} (pro-player da FURIA). \
-Responda em português, tom descontraído, sem exceder 2 frases.`;
-
-  const r = await fetch('https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1',
-    {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${HF_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        inputs: `<s>[INST] ${systemPrompt}\nUsuário: ${text} [/INST]`,
-        parameters: { max_new_tokens: 80, temperature: 0.8 },
-      }),
-    });
-
-  const data = await r.json();
-  const replyTxt = Array.isArray(data) ? data[0]?.generated_text?.split('[/INST]')[1] : '...';
-
-  return { reply: replyTxt?.trim() ?? '(sem resposta)', avatar: ECHOS.find(e => e.id === ecoId).avatar };
+/* ──────────────────────────────────────────────────────────────────
+     4.  Outros ecos – placeholder simples
+     ────────────────────────────────────────────────────────────────── */
+export async function sendMessage(ecoId, text) {
+  // “Eco” que apenas devolve o tamanho da mensagem
+  return {
+    id: Date.now(),
+    sender: ECHOS.find((e) => e.id === ecoId)?.name ?? "Eco",
+    content: `(recebi ${text.length} caracteres)`,
+    isUser: false,
+  };
 }

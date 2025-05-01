@@ -21,7 +21,7 @@ class Command(BaseCommand):
         output_dir.mkdir(exist_ok=True)   # cria pasta se não existir
 
         # Nome do arquivo com timestamp UTC
-        filename = dt.datetime.utcnow().strftime("snapshot_%Y%m%dT%H%M%SZ.json")
+        filename = dt.datetime.utcnow().strftime("latest_snapshot.json")
         output_path = output_dir / filename
 
         # Salvando

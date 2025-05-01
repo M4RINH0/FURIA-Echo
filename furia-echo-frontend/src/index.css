@@ -25,3 +25,21 @@
       max-height: 800px;
     }
   }
+
+  .custom-scrollbar {
+    scrollbar-width: thin; /* Para navegadores compatíveis com CSS padrão */
+    scrollbar-color: #4b5563 transparent; /* Cor do scroll */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 6px; /* Largura do scroll */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #4b5563; /* Cor do scroll */
+    border-radius: 10px; /* Bordas arredondadas */
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: transparent; /* Fundo do track */
+  }

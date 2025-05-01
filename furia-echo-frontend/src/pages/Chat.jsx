@@ -9,6 +9,7 @@ import {
   ECHOS,
   fetchMessages,
   sendMessage,
+  sendFuriaMessage, // ajuste
 } from '../services/ChatServices';
 
 export default function Chat() {
@@ -45,31 +46,41 @@ export default function Chat() {
 
   /* ── envio de mensagem ───────────────────────────────────────────── */
   const handleSendMessage = async (text) => {
-    if (!activeId) return;
-
-    const msgUser = { id: crypto.randomUUID(), sender: 'User', content: text, isUser: true };
-    setMessagesById(prev => ({
+    // nossa mensagem na tela
+    const newMsg = {
+      id: Date.now(),
+      sender: 'User',
+      content: text,
+      isUser: true,
+    };
+    setMessagesById((prev) => ({
       ...prev,
-      [activeId]: [...(prev[activeId] ?? []), msgUser],
+      [activeId]: [...(prev[activeId] || []), newMsg],
     }));
 
+    // se a conversa ativa é o eco FURIA (id === 0)
+    if (activeId === "furia") {
+      try {
+        const botReply = await sendFuriaMessage(text);
+        setMessagesById((prev) => ({
+          ...prev,
+          [activeId]: [...(prev[activeId] || []), botReply],
+        }));
+      } catch (e) {
+        console.error(e);
+      }
+      return;
+    }
+
+    // demais ecos ainda “mockados”
     try {
-      const { reply, avatar } = await sendMessage(activeId, text);
-
-      const msgEcho = { id: crypto.randomUUID(), sender: 'eco', content: reply, isUser: false, avatar };
-      setMessagesById(prev => ({
+      const reply = await sendMessage(activeId, text);
+      setMessagesById((prev) => ({
         ...prev,
-        [activeId]: [...prev[activeId], msgEcho],
+        [activeId]: [...(prev[activeId] || []), reply],
       }));
-
-      // atualiza lastMessage/time na sidebar
-      setConversations(prev =>
-        [...prev].map(c =>
-          c.id === activeId ? { ...c, lastMessage: reply, time: new Date() } : c
-        ).sort((a,b) => new Date(b.time) - new Date(a.time))
-      );
-    } catch (err) {
-      console.error(err);
+    } catch (e) {
+      console.error(e);
     }
   };
 
