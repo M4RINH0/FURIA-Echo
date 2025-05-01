@@ -1,17 +1,25 @@
-# echo/views.py
-from rest_framework import generics
-from .models import Match, News, Result
-from .serializers import MatchSerializer, NewsSerializer, ResultSerializer
+# views.py  (esqueleto)
+@csrf_exempt
+def echoes(request):
+    return JsonResponse([
+        dict(id='furia', name='FURIA', avatar='/avatars/furia.svg', lastMessage='', time=''),
+        dict(id='fallen', name='FalleN', avatar='/avatars/fallen.jpg', lastMessage='', time=''),
+        # ...
+    ], safe=False)
 
-class NextMatches(generics.ListAPIView):
-    serializer_class = MatchSerializer
-    queryset = Match.objects.order_by("datetime_utc")
+@csrf_exempt
+def messages(request, eco_id):
+    if request.method == 'GET':
+        return JsonResponse([], safe=False)   # TODO: carregar do DB
+    if request.method == 'POST':
+        payload = json.loads(request.body)
+        # TODO: salvar mensagem no DB
+        return JsonResponse({'ok': True})
 
-class FuriaNews(generics.ListAPIView):
-    serializer_class = NewsSerializer
-    queryset = News.objects.order_by("-published_at")[:20]
-
-
-class RecentResults(generics.ListAPIView):
-    serializer_class = ResultSerializer
-    queryset = Result.objects.order_by("-datetime_utc")[:20]
+@csrf_exempt
+def furia_answer(request):
+    payload = json.loads(request.body)
+    user_prompt = payload['prompt']
+    # → aqui você chama seu módulo que usa HLTV snapshot + OpenAI local
+    reply = gerar_resposta_furia(user_prompt)
+    return JsonResponse({'reply': reply, 'avatar': '/avatars/furia.svg'})

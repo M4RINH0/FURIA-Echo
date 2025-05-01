@@ -1,7 +1,9 @@
+# echo/urls.py
 from django.urls import path
 from . import views
+
 urlpatterns = [
-    path("matches/", views.NextMatches.as_view()),
-    path("news/",    views.FuriaNews.as_view()),
-    path("results/", views.RecentResults.as_view()),
+    path('chat/echoes',                   views.echoes,        name='echoes'),
+    path('chat/<slug:eco_id>/messages',   views.messages,      name='messages'),
+    path('chat/furia/answer',             views.furia_answer,  name='furia_answer'),
 ]

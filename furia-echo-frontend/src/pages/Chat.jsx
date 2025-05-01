@@ -1,141 +1,100 @@
+// src/pages/Chat.jsx
 import { useState, useEffect, useRef } from 'react';
 import backgroundImage from '../assets/background.png';
+
 import ChatSidebar from '../components/ChatSidebar';
-import ChatArea from '../components/ChatArea';
-import { fetchConversations, fetchMessages, sendMessage } from '../services/chatService';
-import fallen from '../assets/fallen.jpg';
-import guerri from '../assets/guerri.webp';
-import kscerato from '../assets/kscerato.jpg';
-import yuurih from '../assets/yuurih.jpg';
-import sidde from '../assets/sidde.jpg';
+import ChatArea    from '../components/ChatArea';
+
+import {
+  ECHOS,
+  fetchMessages,
+  sendMessage,
+} from '../services/ChatServices';
 
 export default function Chat() {
   const [conversations, setConversations] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [activeConversation, setActiveConversation] = useState(null);
-  const [currentConversationData, setCurrentConversationData] = useState(null);
-  const [scale, setScale] = useState(1);
-  const containerRef = useRef(null);
+  const [messagesById,  setMessagesById]  = useState({});   // { ecoId: [...] }
+  const [activeId,      setActiveId]      = useState(null);
+  const [scale,         setScale]         = useState(1);
+  const containerRef                      = useRef(null);
 
-  // Calcular a escala baseada na resolução da tela
+  /* ── escala do frame ─────────────────────────────────────────────── */
   useEffect(() => {
-    const calculateScale = () => {
-      // Tamanho de referência: 1366x768
-      const referenceWidth = 1366;
-      const referenceHeight = 768;
-      
-      // Dimensões atuais da janela
-      const windowWidth = window.innerWidth;
-      const windowHeight = window.innerHeight;
-      
-      // Calcular escalas para largura e altura
-      const widthScale = windowWidth / referenceWidth;
-      const heightScale = windowHeight / referenceHeight;
-      
-      // Usar a menor escala para garantir que o frame caiba na tela
-      const newScale = Math.min(widthScale, heightScale, 1.5); // limitando a escala máxima a 1.5x
-      
-      setScale(newScale);
+    const calcScale = () => {
+      const s = Math.min(window.innerWidth / 1366, window.innerHeight / 768, 1.5);
+      setScale(s);
     };
-
-    // Calcular escala inicial
-    calculateScale();
-    
-    // Recalcular quando a janela for redimensionada
-    window.addEventListener('resize', calculateScale);
-    
-    // Limpar listener quando o componente for desmontado
-    return () => window.removeEventListener('resize', calculateScale);
+    calcScale();
+    window.addEventListener('resize', calcScale);
+    return () => window.removeEventListener('resize', calcScale);
   }, []);
 
-  // Simular dados para prototipagem
+  /* ecos são fixos */
   useEffect(() => {
-    // Em produção, substituir por chamadas reais ao serviço
-    const convos = [
-        { id: 1, name: 'FalleN', lastMessage: 'Saudades Chelo...', time: '12:30', avatar: fallen },
-        { id: 2, name: 'Guerri', lastMessage: 'Não foi assim que ensinei sidde', time: '8:06', avatar: guerri },
-        { id: 3, name: 'KSCERATO', lastMessage: 'HOJE TEM HEHE', time: '7:35', avatar: kscerato },
-        { id: 4, name: 'yuurih', lastMessage: 'Foi por pouco.', time: '5:45', avatar: yuurih },
-        { id: 5, name: 'sidde', lastMessage: 'É levantar a cabeça e ir pra proxima', time: '00:35', avatar: sidde },
-    ];
-    setConversations(convos);
-    setActiveConversation(1);
-    
-    const msgs = [
-      { id: 1, sender: 'FalleN', content: 'Tivemos que fazer a troca!', isUser: false },
-      { id: 2, sender: 'User', content: 'Mas porque o YEKINDAR?', isUser: true },
-      { id: 3, sender: 'FalleN', content: 'Foi a opção que tinhamos no mercado', isUser: false },
-      { id: 4, sender: 'User', content: 'Saudades Chelo...', isUser: true },
-    ];
-    setMessages(msgs);
+    setConversations(ECHOS);
+    setActiveId(ECHOS[0].id);
   }, []);
 
-  // Quando a conversa ativa muda, atualize os dados da conversa atual
+  /* ── carrega msgs da conversa ativa ──────────────────────────────── */
   useEffect(() => {
-    if (activeConversation) {
-      const currentConvo = conversations.find(c => c.id === activeConversation);
-      setCurrentConversationData(currentConvo);
+    if (!activeId || messagesById[activeId]) return;
+    fetchMessages(activeId)
+      .then(ms => setMessagesById(prev => ({ ...prev, [activeId]: ms })))
+      .catch(console.error);
+  }, [activeId, messagesById]);
+
+  /* ── envio de mensagem ───────────────────────────────────────────── */
+  const handleSendMessage = async (text) => {
+    if (!activeId) return;
+
+    const msgUser = { id: crypto.randomUUID(), sender: 'User', content: text, isUser: true };
+    setMessagesById(prev => ({
+      ...prev,
+      [activeId]: [...(prev[activeId] ?? []), msgUser],
+    }));
+
+    try {
+      const { reply, avatar } = await sendMessage(activeId, text);
+
+      const msgEcho = { id: crypto.randomUUID(), sender: 'eco', content: reply, isUser: false, avatar };
+      setMessagesById(prev => ({
+        ...prev,
+        [activeId]: [...prev[activeId], msgEcho],
+      }));
+
+      // atualiza lastMessage/time na sidebar
+      setConversations(prev =>
+        [...prev].map(c =>
+          c.id === activeId ? { ...c, lastMessage: reply, time: new Date() } : c
+        ).sort((a,b) => new Date(b.time) - new Date(a.time))
+      );
+    } catch (err) {
+      console.error(err);
     }
-  }, [activeConversation, conversations]);
-
-  const handleSelectConversation = (conversationId) => {
-    setActiveConversation(conversationId);
   };
 
-  const handleSendMessage = (text) => {
-    const newMessage = {
-      id: messages.length + 1,
-      sender: 'User',
-      content: text,
-      isUser: true,
-    };
-    
-    setMessages([...messages, newMessage]);
-  };
+  /* ── dados atuais ────────────────────────────────────────────────── */
+  const currentConvo = conversations.find(c => c.id === activeId);
+  const currentMsgs  = messagesById[activeId] ?? [];
 
+  /* ── UI ──────────────────────────────────────────────────────────── */
   return (
-    <div 
-      className="flex justify-center items-center min-h-screen w-full bg-no-repeat bg-cover bg-center" 
-      style={{ 
-        backgroundImage: `url(${backgroundImage})`,
-      }}
-    >
-      {/* Chat Frame Container com dimensões exatas e escala */}
-      <div 
-        ref={containerRef}
-        className="flex rounded-2xl overflow-hidden shadow-xl"
-        style={{ 
-          width: '1200px',
-          height: '700px',
-          transform: `scale(${scale})`,
-          transformOrigin: 'center center'
-        }}
-      >
-        <div 
-          className="flex flex-col" 
-          style={{ 
-            width: '421px',
-            height: '700px',
-            backgroundColor: 'rgba(20, 23, 28, 0.7)',
-          }}
-        >
-          <ChatSidebar 
-            conversations={conversations} 
-            activeConversation={activeConversation}
-            onSelectConversation={handleSelectConversation}
+    <div className="flex justify-center items-center min-h-screen bg-no-repeat bg-cover bg-center"
+         style={{ backgroundImage: `url(${backgroundImage})` }}>
+      <div ref={containerRef}
+           className="flex rounded-2xl overflow-hidden shadow-xl"
+           style={{ width:'1200px', height:'700px', transform:`scale(${scale})`, transformOrigin:'center' }}>
+        <div className="w-[421px] h-full bg-[rgba(20,23,28,0.7)]">
+          <ChatSidebar
+            conversations={conversations}
+            activeConversation={activeId}
+            onSelectConversation={setActiveId}
           />
         </div>
-        <div 
-          className="flex-1 flex flex-col" 
-          style={{ 
-            width: '779px',
-            height: '700px',
-            backgroundColor: 'rgba(27, 31, 38, 0.5)',
-          }}
-        >
-          <ChatArea 
-            conversation={currentConversationData}
-            messages={messages}
+        <div className="flex-1 bg-[rgba(27,31,38,0.5)]">
+          <ChatArea
+            conversation={currentConvo}
+            messages={currentMsgs}
             onSendMessage={handleSendMessage}
           />
         </div>
