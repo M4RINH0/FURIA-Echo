@@ -1,12 +1,22 @@
 {
   "team_id": 8297,
   "team_name": "FURIA",
-  "last_updated": "2025-05-01T20:28:03.890138Z",
+  "last_updated": "2025-05-03T15:28:55.830776Z",
   "ranking": {
     "current_rank": 19,
     "points": 19
   },
-  "upcoming_matches": [],
+  "upcoming_matches": [
+    {
+      "hltv_id": 2382203,
+      "event": "PGL Astana 2025",
+      "datetime_utc": "2025-05-10T08:00:00+00:00",
+      "team1": "FURIA",
+      "team2": "The MongolZ",
+      "opponent": "The MongolZ",
+      "match_url": "https://www.hltv.org/matches/2382203/the-mongolz-vs-furia-pgl-astana-2025"
+    }
+  ],
   "recent_results": [
     {
       "hltv_id": 2381321,

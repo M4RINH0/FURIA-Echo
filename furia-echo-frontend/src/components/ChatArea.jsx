@@ -14,7 +14,7 @@ export default function ChatArea({
       <ChatHeader
         name={conversation?.name}
         avatar={conversation?.avatar}
-        canReset={conversation?.id !== 'furia'}
+        canReset={true}
         onReset={onResetChat}
       />
 

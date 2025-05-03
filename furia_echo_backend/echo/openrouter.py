@@ -3,7 +3,7 @@ import os, requests, json
 
 OR_KEY = os.getenv("OPENROUTER_API_KEY")           # coloque no .env / settings
 OR_URL = "https://openrouter.ai/api/v1/chat/completions"
-DEFAULT_MODEL = "google/gemini-2.0-flash-exp:free"
+DEFAULT_MODEL = "meta-llama/llama-4-scout:free"
 
 def ask_openrouter(messages, model=DEFAULT_MODEL,
                    max_tokens=120, temperature=0.8) -> str:

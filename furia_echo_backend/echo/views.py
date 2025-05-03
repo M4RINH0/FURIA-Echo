@@ -78,14 +78,14 @@ def furia_chat(request):
     except Exception:
         return HttpResponseBadRequest("JSON inválido")
 
-    if not msg or msg.isalpha():
+    if not msg or msg.replace(" ", "").isalpha():  # Ignora espaços ao verificar se é alfabético
         return JsonResponse({"reply": WELCOME})
 
     data = fetch_team_snapshot()                                # HLTV snapshot
 
     # 1) Resultados recentes ------------------------------------------------
     if msg.startswith("1"):
-        lines = []
+        lines = ["Confira os resultados mais recentes da FURIA CS:"]
         for m in data["recent_results"][:5]:
             res = "✅" if m["win"] else "❌"
             lines.append(f"{res} {m['event']}\nFURIA {m['score']} {m['opponent']}")
@@ -96,8 +96,11 @@ def furia_chat(request):
     if msg.startswith("2"):
         up = data["upcoming_matches"]
         if not up:
-            return JsonResponse({"reply": "Nenhuma partida marcada 😔" + FOLLOW_UP})
-        lines = [f"🗓 {m['event']} • vs {m['opponent']}" for m in up[:5]]
+            return JsonResponse({"reply": "No momento não temos partidas marcadas 😔, mas fica ligado que em breve teremos novidades! 🔥" + FOLLOW_UP})
+        lines = ["Confira as próximas partidas da FURIA:"]
+        for m in up[:5]:
+            date = dt.datetime.fromisoformat(m["datetime_utc"]).strftime("%d/%m/%Y")
+            lines.append(f"🗓 {m['event']} • vs {m['opponent']} • {date}")
         return JsonResponse({"reply": "\n".join(lines) + FOLLOW_UP})
 
     # 3) Próximos campeonatos ----------------------------------------------
@@ -115,7 +118,7 @@ def furia_chat(request):
     # 4) Ranking Valve ------------------------------------------------------
     if msg.startswith("4"):
         pos = data.get("ranking", {}).get("current_rank", "N/A")
-        return JsonResponse({"reply": f"📊 Ranking Valve Atual\nPosição: #{pos}" + FOLLOW_UP})
+        return JsonResponse({"reply": f"📊 Ranking Valve Atual\nPosição: #{pos}\nOlha nosso rank atual, em busca do top 1! 🔥" + FOLLOW_UP})
 
     return JsonResponse({"reply": "Não entendi 🤔 — digite 1, 2, 3 ou 4."})
 

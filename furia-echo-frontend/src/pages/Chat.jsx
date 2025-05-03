@@ -50,7 +50,7 @@ export default function Chat() {
 
   /* ── resetar chat ───────────────────────────────────────────── */
   const handleResetChat = async () => {
-    if (!activeId || activeId === 'furia') return;
+    if (!activeId) return;
     // 1) limpa no backend
     try { await resetChat(activeId); } catch (e) { console.error(e); }
     // 2) limpa no state local

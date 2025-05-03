@@ -8,7 +8,7 @@ export default function Home() {
 
   useEffect(() => {
     if (videoRef.current) {
-      videoRef.current.playbackRate = 1.35;
+      videoRef.current.playbackRate = 1.5;
     }
   }, []);
 
