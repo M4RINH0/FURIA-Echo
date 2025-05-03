@@ -43,7 +43,7 @@ resultados, ranking, campeonatos) com **IA gratuita** servida pela
 |-------------|-------------------------------------|
 | **Front**   | React + Vite · TailwindCSS          |
 | **Back**    | Django 5 · Django REST Framework · `cloudscraper` |
-| **IA**      | Google Gemini-2.0 Flash (via OpenRouter) |
+| **IA**      | Meta: Llama 4 Scout (via OpenRouter) |
 | **Scraper** | HLTV (próximas partidas, resultados, eventos, ranking) |
 | **Hospedagem** | **Vercel** (front) · **Railway** (back) |
 
@@ -119,7 +119,7 @@ furia-echo/
 | Área        | Fonte                                          |
 |-------------|------------------------------------------------|
 | Dados       | HLTV, Liquipedia, entrevistas, redes da FURIA  |
-| IA          | OpenRouter (modelo gratuito **Gemini 2.0 Flash**) |
+| IA          | OpenRouter (modelo gratuito **llama-4-scout**) |
 | Dev & UI    | Douglas Marinho Martins                        |
 
 ## 📬 Contato
